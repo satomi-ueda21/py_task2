@@ -66,6 +66,8 @@ def main():
     driver.find_element(by=By.CLASS_NAME, value="topSearch__text").send_keys(search_keyword)
     # 検索ボタンクリック
     driver.find_element(by=By.CLASS_NAME, value="topSearch__button").click()
+    # 空のDataFrame作成
+    df = pd.DataFrame()
 
     while True:
         '''
@@ -75,8 +77,8 @@ def main():
         name_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__name")
         title_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__copy")
 
-        # 空のDataFrame作成
-        df = pd.DataFrame()
+        # # 空のDataFrame作成
+        # df = pd.DataFrame()
 
         # 1ページ分繰り返し
         print(len(name_elms))
@@ -99,6 +101,8 @@ def main():
         except:
             print("最後のページです")
             break
+
+    df.to_csv("求人一覧.csv", encoding="utf-8_sig")
 
 
 

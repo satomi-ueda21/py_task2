@@ -67,32 +67,38 @@ def main():
     # 検索ボタンクリック
     driver.find_element(by=By.CLASS_NAME, value="topSearch__button").click()
 
+    while True:
+        '''
+        find_elements(※複数形)を使用すると複数のデータがListで取得できる
+        一覧から同一条件で複数のデータを取得する場合は、こちらを使用する
+        '''
+        name_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__name")
+        title_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__copy")
 
-    '''
-    find_elements(※複数形)を使用すると複数のデータがListで取得できる
-    一覧から同一条件で複数のデータを取得する場合は、こちらを使用する
-    '''
-    name_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__name")
-    title_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__copy")
-    # title_elms = title_tag.find_elements(By.TAG_NAME, "target")
+        # 空のDataFrame作成
+        df = pd.DataFrame()
 
-    # 空のDataFrame作成
-    df = pd.DataFrame()
+        # 1ページ分繰り返し
+        print(len(name_elms))
+        '''
+        name_elmsには１ページ分の情報が格納されているのでforでループさせて１つづつ取り出して、Dataframeに格納する
+        '''
 
-    # 1ページ分繰り返し
-    print(len(name_elms))
-    '''
-    name_elmsには１ページ分の情報が格納されているのでforでループさせて１つづつ取り出して、Dataframeに格納する
-    '''
-    for name_elm, title_elm in zip(name_elms, title_elms):
-        print(name_elm.text)
-        print(title_elm.text)
-        # DataFrameに対して辞書形式でデータを追加する
-        df = df.append(
-            {"会社名": name_elm.text,
-             "タイトル名": title_elm.text,
-             "項目C": ""},
+        for name_elm, title_elm in zip(name_elms, title_elms):
+            print(name_elm.text)
+            print(title_elm.text)
+            # DataFrameに対して辞書形式でデータを追加する
+            df = df.append(
+                {"会社名": name_elm.text,
+                "タイトル名": title_elm.text,
+                "項目C": ""},
             ignore_index=True)
+
+        try:
+            driver.find_element(by=By.CLASS_NAME, value="iconFont--arrowLeft").click()
+        except:
+            print("最後のページです")
+            break
 
 
 

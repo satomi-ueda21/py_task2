@@ -73,6 +73,8 @@ def main():
     一覧から同一条件で複数のデータを取得する場合は、こちらを使用する
     '''
     name_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__name")
+    title_tag = driver.find_elements(by=By.CLASS_NAME, value=".cassetteRecruit__copy")
+    title_elms = title_tag.find_elements(By.TAG_NAME, "target")
 
     # 空のDataFrame作成
     df = pd.DataFrame()
@@ -82,12 +84,13 @@ def main():
     '''
     name_elmsには１ページ分の情報が格納されているのでforでループさせて１つづつ取り出して、Dataframeに格納する
     '''
-    for name_elm in name_elms:
+    for name_elm, title_elm in zip(name_elms, title_elms):
         print(name_elm.text)
+        print(title_elm.text)
         # DataFrameに対して辞書形式でデータを追加する
         df = df.append(
             {"会社名": name_elm.text,
-             "項目B": "",
+             "タイトル名": title_elm.text,
              "項目C": ""},
             ignore_index=True)
 

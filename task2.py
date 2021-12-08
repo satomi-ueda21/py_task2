@@ -37,7 +37,7 @@ def main():
     '''
     main処理
     '''
-    search_keyword = "高収入"
+    search_keyword = input("検索キーワードを入力してください>>>")
     # driverを起動
     driver = set_driver()
 

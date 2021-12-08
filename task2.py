@@ -73,8 +73,8 @@ def main():
     一覧から同一条件で複数のデータを取得する場合は、こちらを使用する
     '''
     name_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__name")
-    title_tag = driver.find_elements(by=By.CLASS_NAME, value=".cassetteRecruit__copy")
-    title_elms = title_tag.find_elements(By.TAG_NAME, "target")
+    title_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__copy")
+    # title_elms = title_tag.find_elements(By.TAG_NAME, "target")
 
     # 空のDataFrame作成
     df = pd.DataFrame()

@@ -38,40 +38,40 @@ def main():
     '''
     main処理
     '''
-    try:
-        search_keyword = input("検索キーワードを入力してください>>>")
-        # driverを起動
-        driver = set_driver()
+    search_keyword = input("検索キーワードを入力してください>>>")
+    # driverを起動
+    driver = set_driver()
 
-        # Webサイトを開く
-        driver.get("https://tenshoku.mynavi.jp/")
-        time.sleep(5)
+    # Webサイトを開く
+    driver.get("https://tenshoku.mynavi.jp/")
+    time.sleep(5)
 
-        '''
-        ポップアップを閉じる
-        ※余計なポップアップが操作の邪魔になる場合がある
-        モーダルのようなポップアップ画面は、通常のclick操作では処理できない場合があるため
-        excute_scriptで直接Javascriptを実行することで対処する
-        '''
-        driver.execute_script('document.querySelector(".karte-close").click()')
-        time.sleep(5)
-        # ポップアップを閉じる
-        driver.execute_script('document.querySelector(".karte-close").click()')
+    '''
+    ポップアップを閉じる
+    ※余計なポップアップが操作の邪魔になる場合がある
+    モーダルのようなポップアップ画面は、通常のclick操作では処理できない場合があるため
+    excute_scriptで直接Javascriptを実行することで対処する
+    '''
+    driver.execute_script('document.querySelector(".karte-close").click()')
+    time.sleep(5)
+    # ポップアップを閉じる
+    driver.execute_script('document.querySelector(".karte-close").click()')
 
 
-        '''
-        find_elementでHTML要素(WebElement)を取得する
-        byで、要素を特定する属性を指定するBy.CLASS_NAMEの他、By.NAME、By.ID、By.CSS_SELECTORなどがある
-        特定した要素に対して、send_keysで入力、clickでクリック、textでデータ取得が可能
-        '''
-        # 検索窓に入力
-        driver.find_element(by=By.CLASS_NAME, value="topSearch__text").send_keys(search_keyword)
-        # 検索ボタンクリック
-        driver.find_element(by=By.CLASS_NAME, value="topSearch__button").click()
-        # 空のDataFrame作成
-        df = pd.DataFrame()
+    '''
+    find_elementでHTML要素(WebElement)を取得する
+    byで、要素を特定する属性を指定するBy.CLASS_NAMEの他、By.NAME、By.ID、By.CSS_SELECTORなどがある
+    特定した要素に対して、send_keysで入力、clickでクリック、textでデータ取得が可能
+    '''
+    # 検索窓に入力
+    driver.find_element(by=By.CLASS_NAME, value="topSearch__text").send_keys(search_keyword)
+    # 検索ボタンクリック
+    driver.find_element(by=By.CLASS_NAME, value="topSearch__button").click()
+    # 空のDataFrame作成
+    df = pd.DataFrame()
 
-        while True:
+    while True:
+        try:
             '''
             find_elements(※複数形)を使用すると複数のデータがListで取得できる
             一覧から同一条件で複数のデータを取得する場合は、こちらを使用する
@@ -90,27 +90,31 @@ def main():
 
             stock = 0
             for name_elm, title_elm in zip(name_elms, title_elms):
-                print(name_elm.text)
-                print(title_elm.text)
-                if stock == 0:
-                    raise Exception("エラー")
-                # DataFrameに対して辞書形式でデータを追加する
-                df = df.append(
-                    {"会社名": name_elm.text,
-                    "タイトル名": title_elm.text,
-                    "項目C": ""},
-                ignore_index=True)
+                try:
+                    print(name_elm.text)
+                    print(title_elm.text)
+                    if stock == 0:
+                        raise Exception("エラー")
+                    # DataFrameに対して辞書形式でデータを追加する
+                    df = df.append(
+                        {"会社名": name_elm.text,
+                        "タイトル名": title_elm.text,
+                        "項目C": ""},
+                    ignore_index=True)
+                except:
+                    pass
 
             try:
                 driver.find_element(by=By.CLASS_NAME, value="iconFont--arrowLeft").click()
             except:
                 print("最後のページです")
                 break
+        except:
+            pass
 
         df.to_csv("求人一覧.csv", encoding="utf-8_sig")
 
-    except:
-        pass
+
 
 
 

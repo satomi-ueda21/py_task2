@@ -1,4 +1,5 @@
 from logging import raiseExceptions
+import logging
 import os
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.chrome.service import Service
@@ -38,6 +39,19 @@ def main():
     '''
     main処理
     '''
+    '''
+    ログ出力
+    '''
+    logging.basicConfig(
+        filename='log.txt',
+        filemode='w',
+        level=logging.DEBUG,
+        format='%(asctime)s:%(funcName)s:%(lineno)d:%(levelname)s:%(module)s:%(name)s:%(message)s'
+    )
+    logging.error('エラー')
+    logging.debug("デバッグ")
+    logging.info("情報")
+
     search_keyword = input("検索キーワードを入力してください>>>")
     # driverを起動
     driver = set_driver()
@@ -78,7 +92,6 @@ def main():
             '''
             name_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__name")
             title_elms = driver.find_elements(by=By.CLASS_NAME, value="cassetteRecruit__copy")
-
             # # 空のDataFrame作成
             # df = pd.DataFrame()
 
@@ -88,13 +101,10 @@ def main():
             name_elmsには１ページ分の情報が格納されているのでforでループさせて１つづつ取り出して、Dataframeに格納する
             '''
 
-            stock = 0
             for name_elm, title_elm in zip(name_elms, title_elms):
                 try:
                     print(name_elm.text)
                     print(title_elm.text)
-                    if stock == 0:
-                        raise Exception("エラー")
                     # DataFrameに対して辞書形式でデータを追加する
                     df = df.append(
                         {"会社名": name_elm.text,
@@ -112,10 +122,7 @@ def main():
         except:
             pass
 
-        df.to_csv("求人一覧.csv", encoding="utf-8_sig")
-
-
-
+    df.to_csv("求人一覧.csv", encoding="utf-8_sig")
 
 
 

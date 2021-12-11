@@ -38,8 +38,6 @@ def set_driver(hidden_chrome: bool=False):
 def main():
     '''
     main処理
-    '''
-    '''
     ログ出力
     '''
     logging.basicConfig(
@@ -52,7 +50,7 @@ def main():
     logging.debug("デバッグ")
     logging.info("情報")
 
-    search_keyword = input("検索キーワードを入力してください>>>")
+    search_keyword = input("検索キーワードを入力してください>>>").split()
     # driverを起動
     driver = set_driver()
 
@@ -78,11 +76,15 @@ def main():
     特定した要素に対して、send_keysで入力、clickでクリック、textでデータ取得が可能
     '''
     # 検索窓に入力
-    driver.find_element(by=By.CLASS_NAME, value="topSearch__text").send_keys(search_keyword)
+    # driver.find_element(by=By.CLASS_NAME, value="topSearch__text").send_keys(search_keyword)
     # 検索ボタンクリック
-    driver.find_element(by=By.CLASS_NAME, value="topSearch__button").click()
+    # driver.find_element(by=By.CLASS_NAME, value="topSearch__button").click()
     # 空のDataFrame作成
     df = pd.DataFrame()
+    #検索キーワードリストをURL検索用に結合
+    seek_keyword = '_kw'.join(search_keyword)
+    #URL変更でキーワード検索
+    driver.get(f'https://tenshoku.mynavi.jp/list/kw{seek_keyword}/')
 
     while True:
         try:
@@ -105,6 +107,8 @@ def main():
                 try:
                     print(name_elm.text)
                     print(title_elm.text)
+                    #エラー追加
+                    #raise Exception
                     # DataFrameに対して辞書形式でデータを追加する
                     df = df.append(
                         {"会社名": name_elm.text,
@@ -123,7 +127,6 @@ def main():
             pass
 
     df.to_csv("求人一覧.csv", encoding="utf-8_sig")
-
 
 
 # 直接起動された場合はmain()を起動(モジュールとして呼び出された場合は起動しないようにするため)
